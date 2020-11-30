@@ -30,7 +30,7 @@ button:hover {
 }
 
 .hidden {
-  display: none!important;
+  display: none !important;
 }
 
 /* ~~~~~ MAIN POSTER SECTION ~~~~~ */
@@ -51,8 +51,9 @@ button:hover {
 .poster-img {
   background-size: cover;
   border: 2px solid white;
-  height: 450px;
+  height: auto;
   width: 800px;
+  max-width: 100%;
 }
 
 .poster-title,
@@ -60,14 +61,23 @@ button:hover {
   color: white;
   line-height: 1;
   width: 90%;
+  max-width: 90%;
 }
 
 .poster-title {
   font-size: 60px;
   font-weight: normal;
   letter-spacing: 20px;
+  margin-top: 10px;
   margin-bottom: 10px;
   text-transform: uppercase;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 1000px) {
+  .poster-title {
+    font-size: 30px;
+  }
 }
 
 .main-poster button {
@@ -126,7 +136,7 @@ button:hover {
 }
 
 .mini-poster img {
-  height:200px;
+  height: 200px;
   width: 300px;
 }
 

@@ -101,11 +101,79 @@ var quotes = [
 var savedPosters = [];
 var currentPoster;
 
+//button elements
+var showRandomButton = document.querySelector("button.show-random");
+var showFormButton = document.querySelector("button.show-form");
+var showMainButton = document.querySelector("button.show-main");
+var returnToMainButton = document.querySelector("button.back-to-main");
+var showSavedPostersButton = document.querySelector("button.show-saved");
+
+//section elements
+var mainSection = document.querySelector(".main-poster");
+var formSection = document.querySelector(".poster-form");
+var savedPostersSection = document.querySelector(".saved-posters");
+
 // event listeners go here 👇
+
+// when random poster button is clicked
+showRandomButton.addEventListener("click", createRandomPoster);
+
+// when show-main button is clicked
+showMainButton.addEventListener("click", function () {
+  hideAllSectionsButOne(mainSection);
+});
+
+// when return-to-main button is clicked
+returnToMainButton.addEventListener("click", function () {
+  hideAllSectionsButOne(mainSection);
+});
+
+// when make your own poster button is clicked
+showFormButton.addEventListener("click", function () {
+  hideAllSectionsButOne(formSection);
+});
+
+showSavedPostersButton.addEventListener("click", function () {
+  hideAllSectionsButOne(savedPostersSection);
+});
+
+// FOR SOME REASON, WHEN I PASS PARAMETERS, THE FUNCTION IS CALLED INSTEAD OF WAITING FOR A CLICK
+// showSavedPostersButton.addEventListener( "click", hideAllSectionsButOne(savedPostersSection));
 
 // functions and event handlers go here 👇
 // (we've provided one for you to get you started)!
-function getRandomIndex(array) {
-  return Math.floor(Math.random() * array.length);
+function getRandomValue(array) {
+  var randIndex = Math.floor(Math.random() * array.length);
+  return array[randIndex];
 }
 
+function createRandomPoster() {
+  //get random image and update
+  var randImg = getRandomValue(images);
+  var imageElement = document.querySelector(".main-poster img");
+  imageElement.setAttribute("src", randImg);
+
+  //get random title and update
+  var randTitle = getRandomValue(titles);
+  var titleElement = document.querySelector(".main-poster .poster-title");
+  titleElement.innerText = randTitle;
+
+  //get random quote and update quote
+  var randQuote = getRandomValue(quotes);
+  var quoteElement = document.querySelector(".main-poster .poster-quote");
+  quoteElement.innerText = randQuote;
+}
+//initiate function on page load
+createRandomPoster();
+
+//When a user clicks the “Make Your Own Poster” button, we should see the form, and the main poster should be hidden
+function hideAllSectionsButOne(sectionToShow) {
+  var sections = document.querySelectorAll("section");
+  for (let section of sections) {
+    if (section === sectionToShow) {
+      section.classList.remove("hidden");
+    } else {
+      section.classList.add("hidden");
+    }
+  }
+}
