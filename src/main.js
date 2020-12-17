@@ -107,6 +107,7 @@ var showFormButton = document.querySelector("button.show-form");
 var showMainButton = document.querySelector("button.show-main");
 var returnToMainButton = document.querySelector("button.back-to-main");
 var showSavedPostersButton = document.querySelector("button.show-saved");
+var showMyPosterButton = document.querySelector("button.make-poster");
 
 //section elements
 var mainSection = document.querySelector(".main-poster");
@@ -137,8 +138,13 @@ showSavedPostersButton.addEventListener("click", function () {
   hideAllSectionsButOne(savedPostersSection);
 });
 
+showMyPosterButton.addEventListener("click", function () {
+  event.preventDefault();
+  createCustomPoster();
+});
+
 // FOR SOME REASON, WHEN I PASS PARAMETERS, THE FUNCTION IS CALLED INSTEAD OF WAITING FOR A CLICK
-// showSavedPostersButton.addEventListener( "click", hideAllSectionsButOne(savedPostersSection));
+//showSavedPostersButton.addEventListener( "click", hideAllSectionsButOne(savedPostersSection));
 
 // functions and event handlers go here 👇
 // (we've provided one for you to get you started)!
@@ -164,7 +170,26 @@ function createRandomPoster() {
   quoteElement.innerText = randQuote;
 }
 //initiate function on page load
-createRandomPoster();
+window.onload = function () {
+  createRandomPoster();
+};
+
+//
+function createCustomPoster() {
+  var customImage = document.querySelector("#poster-image-url").value;
+  var customTitle = document.querySelector("#poster-title").value;
+  var customQuote = document.querySelector("#poster-quote").value;
+
+  var imageElement = document.querySelector(".main-poster img");
+  var titleElement = document.querySelector(".main-poster .poster-title");
+  var quoteElement = document.querySelector(".main-poster .poster-quote");
+
+  hideAllSectionsButOne(mainSection);
+
+  imageElement.setAttribute("src", customImage);
+  titleElement.innerText = customTitle;
+  quoteElement.innerText = customQuote;
+}
 
 //When a user clicks the “Make Your Own Poster” button, we should see the form, and the main poster should be hidden
 function hideAllSectionsButOne(sectionToShow) {
