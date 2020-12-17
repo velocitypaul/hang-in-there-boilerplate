@@ -174,21 +174,37 @@ window.onload = function () {
   createRandomPoster();
 };
 
-//
-function createCustomPoster() {
-  var customImage = document.querySelector("#poster-image-url").value;
-  var customTitle = document.querySelector("#poster-title").value;
-  var customQuote = document.querySelector("#poster-quote").value;
-
+function showPoster(image, title, quote) {
+  console.log(image);
   var imageElement = document.querySelector(".main-poster img");
   var titleElement = document.querySelector(".main-poster .poster-title");
   var quoteElement = document.querySelector(".main-poster .poster-quote");
 
+  imageElement.setAttribute("src", image);
+  titleElement.innerText = title;
+  quoteElement.innerText = quote;
+}
+
+function createCustomPoster() {
+  //get form input values
+  var customImage = document.querySelector("#poster-image-url").value;
+  var customTitle = document.querySelector("#poster-title").value;
+  var customQuote = document.querySelector("#poster-quote").value;
+
+  //Save the submitted data into the respective arrays (image URL into the images array, etc) so that future random posters can use the user-created data
+  images.push(customImage);
+  titles.push(customTitle);
+  quotes.push(customQuote);
+
+  //Use the values from the inputs to create a new instance of our Poster class
+  var newPoster = new Poster(customImage, customTitle, customQuote);
+  console.log(newPoster);
+
+  //Change back to the main poster view (hiding the form view again)
   hideAllSectionsButOne(mainSection);
 
-  imageElement.setAttribute("src", customImage);
-  titleElement.innerText = customTitle;
-  quoteElement.innerText = customQuote;
+  // /Display the newly created poster image, title, and quote in the main view
+  showPoster(newPoster.imageURL, newPoster.title, newPoster.quote);
 }
 
 //When a user clicks the “Make Your Own Poster” button, we should see the form, and the main poster should be hidden
