@@ -101,35 +101,45 @@ var quotes = [
 var savedPosters = [];
 var currentPoster;
 
-//button elements
-var showRandomButton = document.querySelector("button.show-random");
-var showFormButton = document.querySelector("button.show-form");
-var showMainButton = document.querySelector("button.show-main");
-var returnToMainButton = document.querySelector("button.back-to-main");
-var showSavedPostersButton = document.querySelector("button.show-saved");
-var showMyPosterButton = document.querySelector("button.make-poster");
+//buttons
+var showRandomButton = document.querySelector(".show-random");
+var showFormButton = document.querySelector(".show-form");
+var showMainButton = document.querySelector(".show-main");
+var returnToMainButton = document.querySelector(".back-to-main");
+var showSavedPostersButton = document.querySelector(".show-saved");
+var showMyPosterButton = document.querySelector(".make-poster");
+var saveThisPosterButton = document.querySelector(".save-poster");
 
-//section elements
+//sections
 var mainSection = document.querySelector(".main-poster");
 var formSection = document.querySelector(".poster-form");
 var savedPostersSection = document.querySelector(".saved-posters");
+var savedPostersGrid = document.querySelector(".saved-posters-grid");
+
+//poster elements
+var mainImageElement = document.querySelector(".main-poster img");
+var mainTitleElement = document.querySelector(".main-poster .poster-title");
+var mainQuoteElement = document.querySelector(".main-poster .poster-quote");
 
 // event listeners go here 👇
-
-// when random poster button is clicked
 showRandomButton.addEventListener("click", createRandomPoster);
 
-// when show-main button is clicked
+saveThisPosterButton.addEventListener(
+  "click",
+  function () {
+    savePoster(currentPoster);
+  },
+  { once: true }
+);
+
 showMainButton.addEventListener("click", function () {
   hideAllSectionsButOne(mainSection);
 });
 
-// when return-to-main button is clicked
 returnToMainButton.addEventListener("click", function () {
   hideAllSectionsButOne(mainSection);
 });
 
-// when make your own poster button is clicked
 showFormButton.addEventListener("click", function () {
   hideAllSectionsButOne(formSection);
 });
@@ -138,78 +148,30 @@ showSavedPostersButton.addEventListener("click", function () {
   hideAllSectionsButOne(savedPostersSection);
 });
 
-showMyPosterButton.addEventListener("click", function () {
+showMyPosterButton.addEventListener("click", function (event) {
   event.preventDefault();
   createCustomPoster();
 });
 
-// FOR SOME REASON, WHEN I PASS PARAMETERS, THE FUNCTION IS CALLED INSTEAD OF WAITING FOR A CLICK
-//showSavedPostersButton.addEventListener( "click", hideAllSectionsButOne(savedPostersSection));
-
 // functions and event handlers go here 👇
-// (we've provided one for you to get you started)!
-function getRandomValue(array) {
+function getRandomValueFromArray(array) {
+  //generate a random index number from the length of the array
   var randIndex = Math.floor(Math.random() * array.length);
+  //return the value of the randome index on the array
   return array[randIndex];
 }
 
 function createRandomPoster() {
-  //get random image and update
-  var randImg = getRandomValue(images);
-  var imageElement = document.querySelector(".main-poster img");
-  imageElement.setAttribute("src", randImg);
-
-  //get random title and update
-  var randTitle = getRandomValue(titles);
-  var titleElement = document.querySelector(".main-poster .poster-title");
-  titleElement.innerText = randTitle;
-
-  //get random quote and update quote
-  var randQuote = getRandomValue(quotes);
-  var quoteElement = document.querySelector(".main-poster .poster-quote");
-  quoteElement.innerText = randQuote;
-}
-//initiate function on page load
-window.onload = function () {
-  createRandomPoster();
-};
-
-function showPoster(image, title, quote) {
-  console.log(image);
-  var imageElement = document.querySelector(".main-poster img");
-  var titleElement = document.querySelector(".main-poster .poster-title");
-  var quoteElement = document.querySelector(".main-poster .poster-quote");
-
-  imageElement.setAttribute("src", image);
-  titleElement.innerText = title;
-  quoteElement.innerText = quote;
+  var randImg = getRandomValueFromArray(images);
+  var randTitle = getRandomValueFromArray(titles);
+  var randQuote = getRandomValueFromArray(quotes);
+  newPoster(randImg, randTitle, randQuote);
 }
 
-function createCustomPoster() {
-  //get form input values
-  var customImage = document.querySelector("#poster-image-url").value;
-  var customTitle = document.querySelector("#poster-title").value;
-  var customQuote = document.querySelector("#poster-quote").value;
-
-  //Save the submitted data into the respective arrays (image URL into the images array, etc) so that future random posters can use the user-created data
-  images.push(customImage);
-  titles.push(customTitle);
-  quotes.push(customQuote);
-
-  //Use the values from the inputs to create a new instance of our Poster class
-  var newPoster = new Poster(customImage, customTitle, customQuote);
-  console.log(newPoster);
-
-  //Change back to the main poster view (hiding the form view again)
-  hideAllSectionsButOne(mainSection);
-
-  // /Display the newly created poster image, title, and quote in the main view
-  showPoster(newPoster.imageURL, newPoster.title, newPoster.quote);
-}
-
-//When a user clicks the “Make Your Own Poster” button, we should see the form, and the main poster should be hidden
 function hideAllSectionsButOne(sectionToShow) {
+  //Find all sections in the dom
   var sections = document.querySelectorAll("section");
+  //Iterate through each so that only the section we want showing does not have the hidden class
   for (let section of sections) {
     if (section === sectionToShow) {
       section.classList.remove("hidden");
@@ -218,3 +180,87 @@ function hideAllSectionsButOne(sectionToShow) {
     }
   }
 }
+
+function newPoster(image, title, quote) {
+  //create a new Poster object
+  currentPoster = new Poster(image, title, quote);
+  //display new Poster object in Main Poster section
+  mainImageElement.setAttribute("src", currentPoster.imageURL);
+  mainTitleElement.innerText = currentPoster.title;
+  mainQuoteElement.innerText = currentPoster.quote;
+}
+
+function createCustomPoster() {
+  //get form input values
+  var customImage = document.querySelector("#poster-image-url").value;
+  var customTitle = document.querySelector("#poster-title").value;
+  var customQuote = document.querySelector("#poster-quote").value;
+  //Save the submitted data into the respective arrays (image URL into the images array, etc) so that future random posters can use the user-created data
+  images.push(customImage);
+  titles.push(customTitle);
+  quotes.push(customQuote);
+  //Change back to the main poster view (hiding the form view again)
+  hideAllSectionsButOne(mainSection);
+  // /Display the newly created poster image, title, and quote in the main view, and add to data model
+  newPoster(customImage, customTitle, customQuote);
+}
+
+function savePoster(poster) {
+  //add currentPoster into savedPosters array
+  savedPosters.push(poster);
+  //display the saved posters section and hide others
+  hideAllSectionsButOne(savedPostersSection);
+  //display all savedPosters
+  renderSavedPosters();
+  //re-initiate the Save this Poster listener so additional posters can be saved
+  saveThisPosterButton.addEventListener(
+    "click",
+    function () {
+      savePoster(currentPoster);
+    },
+    { once: true }
+  );
+}
+
+function renderSavedPosters() {
+  var savedPostersHTML = "";
+  savedPosters.forEach(function (poster) {
+    savedPostersHTML += `
+      <div data-id="${poster.id}" class="mini-poster">
+        <img src="${poster.imageURL}" />
+        <h2>${poster.title}</h2>
+        <h4>${poster.quote}</h4>
+      </div>
+    `;
+  });
+  savedPostersGrid.innerHTML = savedPostersHTML;
+  listenForSavedPosterClicks();
+}
+
+function listenForSavedPosterClicks() {
+  var posterElements = document.querySelectorAll(".mini-poster");
+  //Iterate through mini-posters and add an event listener to delete on double click
+  for (let posterElement of posterElements) {
+    posterElement.addEventListener("dblclick", function (event) {
+      event.preventDefault();
+      var posterId = posterElement.dataset.id;
+      //remove HTML element that was double-clicked from the DOM
+      posterElement.remove();
+      //remove poster that was doubleclicked from the data model
+      deletePosterFromArray(posterId);
+    });
+  }
+}
+
+function deletePosterFromArray(id) {
+  var idToDelete = id;
+  //find poster with the correct ID
+  var indexToDelete = savedPosters.findIndex((poster) => id === idToDelete);
+  //delete poster from SavedPosters
+  savedPosters.splice(indexToDelete, 1);
+}
+
+//create a random poster on page load
+window.onload = function () {
+  createRandomPoster();
+};
