@@ -155,13 +155,15 @@ showMyPosterButton.addEventListener("click", function (event) {
 
 // functions and event handlers go here 👇
 function getRandomValueFromArray(array) {
-  //generate a random index number from the length of the array
+  // get a random index from an array and return the value
+
   var randIndex = Math.floor(Math.random() * array.length);
-  //return the value of the randome index on the array
   return array[randIndex];
 }
 
 function createRandomPoster() {
+  //get random values from the content arrays and pass them to the newPoster() function
+
   var randImg = getRandomValueFromArray(images);
   var randTitle = getRandomValueFromArray(titles);
   var randQuote = getRandomValueFromArray(quotes);
@@ -170,8 +172,9 @@ function createRandomPoster() {
 
 function hideAllSectionsButOne(sectionToShow) {
   //Find all sections in the dom
-  var sections = document.querySelectorAll("section");
   //Iterate through each so that only the section we want showing does not have the hidden class
+
+  var sections = document.querySelectorAll("section");
   for (let section of sections) {
     if (section === sectionToShow) {
       section.classList.remove("hidden");
@@ -183,8 +186,9 @@ function hideAllSectionsButOne(sectionToShow) {
 
 function newPoster(image, title, quote) {
   //create a new Poster object
-  currentPoster = new Poster(image, title, quote);
   //display new Poster object in Main Poster section
+
+  currentPoster = new Poster(image, title, quote);
   mainImageElement.setAttribute("src", currentPoster.imageURL);
   mainTitleElement.innerText = currentPoster.title;
   mainQuoteElement.innerText = currentPoster.quote;
@@ -192,27 +196,29 @@ function newPoster(image, title, quote) {
 
 function createCustomPoster() {
   //get form input values
+  //Save the submitted data into the respective arrays (image URL into the images array, etc) so that future random posters can use the user-created data
+  //Change back to the main poster view (hiding the form view again)
+  //Display the newly created poster image, title, and quote in the main view, and add to data model
+
   var customImage = document.querySelector("#poster-image-url").value;
   var customTitle = document.querySelector("#poster-title").value;
   var customQuote = document.querySelector("#poster-quote").value;
-  //Save the submitted data into the respective arrays (image URL into the images array, etc) so that future random posters can use the user-created data
   images.push(customImage);
   titles.push(customTitle);
   quotes.push(customQuote);
-  //Change back to the main poster view (hiding the form view again)
   hideAllSectionsButOne(mainSection);
-  // /Display the newly created poster image, title, and quote in the main view, and add to data model
   newPoster(customImage, customTitle, customQuote);
 }
 
 function savePoster(poster) {
   //add currentPoster into savedPosters array
-  savedPosters.push(poster);
   //display the saved posters section and hide others
-  hideAllSectionsButOne(savedPostersSection);
   //display all savedPosters
-  renderSavedPosters();
   //re-initiate the Save this Poster listener so additional posters can be saved
+
+  savedPosters.push(poster);
+  hideAllSectionsButOne(savedPostersSection);
+  renderSavedPosters();
   saveThisPosterButton.addEventListener(
     "click",
     function () {
@@ -223,6 +229,8 @@ function savePoster(poster) {
 }
 
 function renderSavedPosters() {
+  //iterate through each poster in savedPosters object and display in html
+
   var savedPostersHTML = "";
   savedPosters.forEach(function (poster) {
     savedPostersHTML += `
@@ -238,25 +246,27 @@ function renderSavedPosters() {
 }
 
 function listenForSavedPosterClicks() {
-  var posterElements = document.querySelectorAll(".mini-poster");
   //Iterate through mini-posters and add an event listener to delete on double click
+  //remove HTML element that was double-clicked from the DOM
+  //remove poster that was doubleclicked from the data model
+
+  var posterElements = document.querySelectorAll(".mini-poster");
   for (let posterElement of posterElements) {
     posterElement.addEventListener("dblclick", function (event) {
       event.preventDefault();
       var posterId = posterElement.dataset.id;
-      //remove HTML element that was double-clicked from the DOM
       posterElement.remove();
-      //remove poster that was doubleclicked from the data model
       deletePosterFromArray(posterId);
     });
   }
 }
 
 function deletePosterFromArray(id) {
-  var idToDelete = id;
   //find poster with the correct ID
-  var indexToDelete = savedPosters.findIndex((poster) => id === idToDelete);
   //delete poster from SavedPosters
+
+  var idToDelete = id;
+  var indexToDelete = savedPosters.findIndex((poster) => id === idToDelete);
   savedPosters.splice(indexToDelete, 1);
 }
 
