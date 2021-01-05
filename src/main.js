@@ -211,14 +211,23 @@ function createCustomPoster() {
 }
 
 function savePoster(poster) {
-  //add currentPoster into savedPosters array
+  //check for a duplicate of the poster id
+  //if no duplicate id exists, add currentPoster into savedPosters array
   //display the saved posters section and hide others
-  //display all savedPosters
+  //render all savedPosters
   //re-initiate the Save this Poster listener so additional posters can be saved
+  var checkForDuplicate = savedPosters.find(
+    (posters) => posters.id === poster.id
+  );
 
-  savedPosters.push(poster);
-  hideAllSectionsButOne(savedPostersSection);
-  renderSavedPosters();
+  if (checkForDuplicate === undefined) {
+    savedPosters.push(poster);
+    hideAllSectionsButOne(savedPostersSection);
+    renderSavedPosters();
+  } else {
+    alert("Wait, there is a duplicate poster like this one already saved.");
+  }
+
   saveThisPosterButton.addEventListener(
     "click",
     function () {
